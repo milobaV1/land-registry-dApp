@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { usePinataUpload } from "@/hooks/usePinataUpload";
+import type { NINInterface } from "@/service/interface/nin.interface";
+import { verifyNIN } from "./api/nin";
 
 //Remeber to do all the proper checks
 const formSchema = z.object({
@@ -13,6 +16,8 @@ const formSchema = z.object({
 })
 
 export function KYC(){
+    const { upload, uploadStatus, link } = usePinataUpload()
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -21,12 +26,23 @@ export function KYC(){
         }
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>){
+    async function onSubmit(values: z.infer<typeof formSchema>){
         console.log(values)
-        toast(`Done KYC: ${values.nin}`)
+        const {nin, picture} = values
+        const returnInfo = upload(picture)
+        // const data: NINInterface = {
+        //     nin: nin,
+        //     dob: "safe",
+        //     firstname: "Michael",
+        //     lastname: "Iloba"
+        // }
+        // const response = await verifyNIN(data)
+        // console.log("NIN API response: ",response);
+        toast(`Done KYC: ${nin}`)
+        return returnInfo
     }
     return(
-        <div className="flex items-center justify-center w-full h-[100vh] bg-[#338e64]">
+        <div className="flex items-center justify-center w-full h-[100vh] bg-[#338e64] mt-5">
             <div className="bg-white w-[50rem] h-[50rem] border rounded-lg shadow-lg py-5 px-8">
                 <div>
                     <p className="text-[50px] font-bold">KYC Verification</p>
