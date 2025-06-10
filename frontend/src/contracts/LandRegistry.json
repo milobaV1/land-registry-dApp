@@ -1,0 +1,766 @@
+{
+  "address": "0x55104c2Bb27fE9D7426bDE339e83eF7d80941b53",
+  "abi": [
+    {
+      "type": "constructor",
+      "stateMutability": "undefined",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "_kycAddress"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "LandCreated",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "landId",
+          "indexed": false
+        },
+        {
+          "type": "address",
+          "name": "currentOwner",
+          "indexed": false
+        },
+        {
+          "type": "string",
+          "name": "state",
+          "indexed": false
+        },
+        {
+          "type": "string",
+          "name": "lga",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "area",
+          "indexed": false
+        },
+        {
+          "type": "uint8",
+          "name": "landuse",
+          "indexed": false
+        },
+        {
+          "type": "string",
+          "name": "landIpfs",
+          "indexed": false
+        },
+        {
+          "type": "bool",
+          "name": "isVerified",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "registrationDate",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "LandUpdate",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "currentOwner",
+          "indexed": false
+        },
+        {
+          "type": "uint256",
+          "name": "transferDate",
+          "indexed": false
+        },
+        {
+          "type": "uint8",
+          "name": "transferStatus",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "verifiedLand",
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_landId",
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "doesOwnerHaveLand",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "owner"
+        },
+        {
+          "type": "uint256",
+          "name": "landId"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getAllLand",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            {
+              "type": "uint256",
+              "name": "landId"
+            },
+            {
+              "type": "address",
+              "name": "currentOwner"
+            },
+            {
+              "type": "string",
+              "name": "state"
+            },
+            {
+              "type": "string",
+              "name": "lga"
+            },
+            {
+              "type": "uint256",
+              "name": "area"
+            },
+            {
+              "type": "uint8",
+              "name": "landUse"
+            },
+            {
+              "type": "string",
+              "name": "landIpfs"
+            },
+            {
+              "type": "bool",
+              "name": "isVerified"
+            },
+            {
+              "type": "address[]",
+              "name": "ownershipHistory"
+            },
+            {
+              "type": "uint256",
+              "name": "registrationDate"
+            },
+            {
+              "type": "uint256",
+              "name": "lastTransferDate"
+            },
+            {
+              "type": "uint8",
+              "name": "transferStatus"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getLand",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_landId"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "tuple",
+          "name": "",
+          "components": [
+            {
+              "type": "uint256",
+              "name": "landId"
+            },
+            {
+              "type": "address",
+              "name": "currentOwner"
+            },
+            {
+              "type": "string",
+              "name": "state"
+            },
+            {
+              "type": "string",
+              "name": "lga"
+            },
+            {
+              "type": "uint256",
+              "name": "area"
+            },
+            {
+              "type": "uint8",
+              "name": "landUse"
+            },
+            {
+              "type": "string",
+              "name": "landIpfs"
+            },
+            {
+              "type": "bool",
+              "name": "isVerified"
+            },
+            {
+              "type": "address[]",
+              "name": "ownershipHistory"
+            },
+            {
+              "type": "uint256",
+              "name": "registrationDate"
+            },
+            {
+              "type": "uint256",
+              "name": "lastTransferDate"
+            },
+            {
+              "type": "uint8",
+              "name": "transferStatus"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getLandCount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "owner"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getLandsByState",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "string",
+          "name": "_state"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            {
+              "type": "uint256",
+              "name": "landId"
+            },
+            {
+              "type": "address",
+              "name": "currentOwner"
+            },
+            {
+              "type": "string",
+              "name": "state"
+            },
+            {
+              "type": "string",
+              "name": "lga"
+            },
+            {
+              "type": "uint256",
+              "name": "area"
+            },
+            {
+              "type": "uint8",
+              "name": "landUse"
+            },
+            {
+              "type": "string",
+              "name": "landIpfs"
+            },
+            {
+              "type": "bool",
+              "name": "isVerified"
+            },
+            {
+              "type": "address[]",
+              "name": "ownershipHistory"
+            },
+            {
+              "type": "uint256",
+              "name": "registrationDate"
+            },
+            {
+              "type": "uint256",
+              "name": "lastTransferDate"
+            },
+            {
+              "type": "uint8",
+              "name": "transferStatus"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getLandsByUse",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint8",
+          "name": "_landUse"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            {
+              "type": "uint256",
+              "name": "landId"
+            },
+            {
+              "type": "address",
+              "name": "currentOwner"
+            },
+            {
+              "type": "string",
+              "name": "state"
+            },
+            {
+              "type": "string",
+              "name": "lga"
+            },
+            {
+              "type": "uint256",
+              "name": "area"
+            },
+            {
+              "type": "uint8",
+              "name": "landUse"
+            },
+            {
+              "type": "string",
+              "name": "landIpfs"
+            },
+            {
+              "type": "bool",
+              "name": "isVerified"
+            },
+            {
+              "type": "address[]",
+              "name": "ownershipHistory"
+            },
+            {
+              "type": "uint256",
+              "name": "registrationDate"
+            },
+            {
+              "type": "uint256",
+              "name": "lastTransferDate"
+            },
+            {
+              "type": "uint8",
+              "name": "transferStatus"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getOwnedLands",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "owner"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256[]",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getOwnershipHistory",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_landId"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "address[]",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getTotalLandCount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getVerifiedLands",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "tuple[]",
+          "name": "",
+          "components": [
+            {
+              "type": "uint256",
+              "name": "landId"
+            },
+            {
+              "type": "address",
+              "name": "currentOwner"
+            },
+            {
+              "type": "string",
+              "name": "state"
+            },
+            {
+              "type": "string",
+              "name": "lga"
+            },
+            {
+              "type": "uint256",
+              "name": "area"
+            },
+            {
+              "type": "uint8",
+              "name": "landUse"
+            },
+            {
+              "type": "string",
+              "name": "landIpfs"
+            },
+            {
+              "type": "bool",
+              "name": "isVerified"
+            },
+            {
+              "type": "address[]",
+              "name": "ownershipHistory"
+            },
+            {
+              "type": "uint256",
+              "name": "registrationDate"
+            },
+            {
+              "type": "uint256",
+              "name": "lastTransferDate"
+            },
+            {
+              "type": "uint8",
+              "name": "transferStatus"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "isLandOwner",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "isVerified",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_landId"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "kyc",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "landCount",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "landList",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "uint256",
+          "name": "landId"
+        },
+        {
+          "type": "address",
+          "name": "currentOwner"
+        },
+        {
+          "type": "string",
+          "name": "state"
+        },
+        {
+          "type": "string",
+          "name": "lga"
+        },
+        {
+          "type": "uint256",
+          "name": "area"
+        },
+        {
+          "type": "uint8",
+          "name": "landUse"
+        },
+        {
+          "type": "string",
+          "name": "landIpfs"
+        },
+        {
+          "type": "bool",
+          "name": "isVerified"
+        },
+        {
+          "type": "uint256",
+          "name": "registrationDate"
+        },
+        {
+          "type": "uint256",
+          "name": "lastTransferDate"
+        },
+        {
+          "type": "uint8",
+          "name": "transferStatus"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "landOwners",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "address",
+          "name": "landOwnerAddress"
+        },
+        {
+          "type": "bool",
+          "name": "isActive"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "ownsLand",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": ""
+        },
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "registerLand",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "string",
+          "name": "_state"
+        },
+        {
+          "type": "string",
+          "name": "_lga"
+        },
+        {
+          "type": "uint256",
+          "name": "_area"
+        },
+        {
+          "type": "uint8",
+          "name": "_landUse"
+        },
+        {
+          "type": "string",
+          "name": "_ipfs"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "transferLand",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_landId"
+        },
+        {
+          "type": "address",
+          "name": "_newOwner"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "verifyLand",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": "_landId"
+        }
+      ],
+      "outputs": []
+    }
+  ]
+}
