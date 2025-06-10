@@ -1,0 +1,168 @@
+{
+  "address": "0xe19dcc3A670B2473A4Aa46327c6357edd7CfcFf8",
+  "abi": [
+    {
+      "type": "event",
+      "anonymous": false,
+      "name": "KYCSet",
+      "inputs": [
+        {
+          "type": "address",
+          "name": "user",
+          "indexed": false
+        },
+        {
+          "type": "bool",
+          "name": "isVerified",
+          "indexed": false
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getUserKYCData",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "user"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "string",
+          "name": "ninHash"
+        },
+        {
+          "type": "string",
+          "name": "photoCID"
+        },
+        {
+          "type": "bool",
+          "name": "isVerified"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "getVerifiedUsers",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [],
+      "outputs": [
+        {
+          "type": "address[]",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "hasSubmittedKYC",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "isUserVerified",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "user"
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "kycRecords",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "string",
+          "name": "ninHash"
+        },
+        {
+          "type": "string",
+          "name": "photoCID"
+        },
+        {
+          "type": "bool",
+          "name": "isVerified"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "setKYC",
+      "constant": false,
+      "payable": false,
+      "inputs": [
+        {
+          "type": "address",
+          "name": "user"
+        },
+        {
+          "type": "string",
+          "name": "ninHash"
+        },
+        {
+          "type": "string",
+          "name": "photoCID"
+        }
+      ],
+      "outputs": []
+    },
+    {
+      "type": "function",
+      "name": "users",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "uint256",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "address",
+          "name": ""
+        }
+      ]
+    }
+  ]
+}

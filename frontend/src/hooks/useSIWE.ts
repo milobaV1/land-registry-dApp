@@ -2,6 +2,7 @@ import { useAccount, useSignMessage } from 'wagmi';
 import { SiweMessage } from 'siwe';
 import { getNonce } from './api/get-nonce';
 import { verifyNonce } from './api/verify-nonce';
+import { getKYCVerificationStatus } from './api/check-verification';
 
 export function useSIWE(){
     const {address, chain} = useAccount();
@@ -25,7 +26,10 @@ const signIn = async () => {
     const prepared = message.prepareMessage();
     const signature = await signMessageAsync({message: prepared});
     const {token} = await verifyNonce(prepared, signature)
-    return {token, address}
+    console.log("Here 1")
+    const kycStatus = await getKYCVerificationStatus(address)
+    console.log("Here 2")
+    return {token, address, kycStatus}
     //Do state management here
 
 }

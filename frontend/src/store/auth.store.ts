@@ -4,12 +4,14 @@ import { create, type StateCreator } from "zustand";
 export type AuthState = {
     token?: string
     address?: string
+    kycstatus?: string
     isAuthenticated: boolean
 }
 
 export type AuthActions = {
     setAddress: (address: string) => void;
     setToken: (token: string) => void;
+    setKycstatus: (kycstatus: string) => void;
     //setIsAuthenticated: (isAuthenticated: boolean) => void;
     logOut: () => void;
 }
@@ -36,8 +38,9 @@ const initializer: StateCreator<AuthState & AuthActions> = (set) => ({
             token,
             isAuthenticated: !!(state.address && token),
         })),
+    setKycstatus: (kycstatus: string) => set({kycstatus}),
     //setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
-    logOut: () => set({ token: undefined, address: undefined, isAuthenticated: false })
+    logOut: () => set({ token: undefined, address: undefined, isAuthenticated: false, kycstatus: undefined })
 });
 
 const persistedAuthState = persist<AuthState & AuthActions>(initializer, {
