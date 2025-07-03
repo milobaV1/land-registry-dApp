@@ -155,7 +155,8 @@ contract LandRegistry {
         emit verifiedLand(_landId);
     }
 
-    // Transfer Land Function (Fixed Version)
+    // function initiateTransfer
+    // Transfer Land Function
     function transferLand(uint256 _landId, address _newOwner) public onlyVerifiedUser landExists(_landId){
         LandData storage land = landList[_landId];
         require(land.currentOwner == msg.sender, "Only the owner can transfer land");

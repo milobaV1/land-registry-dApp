@@ -20,7 +20,7 @@ export function Footer(){
                     <div className="flex flex-col gap-2 text-[15px]">
                         <Link to="/"><p className="text-[#9CA3AF] font-light hover:underline hover:font-bold">Home</p></Link>
                         <Link to="/register"><p className="text-[#9CA3AF] font-light hover:underline hover:font-bold">Register Land</p></Link>
-                        <Link to="/"><p className="text-[#9CA3AF] font-light hover:underline hover:font-bold">My Land(s)</p></Link>
+                        <Link to="/land"><p className="text-[#9CA3AF] font-light hover:underline hover:font-bold">My Land(s)</p></Link>
                         <Link to="/kyc"><p className="text-[#9CA3AF] font-light hover:underline hover:font-bold">KYC</p></Link>
                     </div>
             </div>

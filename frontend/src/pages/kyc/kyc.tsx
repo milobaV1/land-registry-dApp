@@ -19,6 +19,7 @@ import { format } from "date-fns/format";
 import { createUser } from "./api/kyc";
 import { useKYCContract } from "@/hooks/useKYCContract";
 import bcrypt from 'bcryptjs'
+import { useNavigate } from "@tanstack/react-router";
 
 //Remeber to do all the proper checks
 const formSchema = z.object({
@@ -33,7 +34,7 @@ const formSchema = z.object({
 
 export function KYC(){
     const { upload, uploadStatus, link} = usePinataUpload()
-
+    const navigate = useNavigate()
     const { firstname, lastname, dob, nin, picture, status, setKYC, resetKYC } = useKYCState();
     const { address } = useAuthState()
     const { submitKYC, hash, isPending, isConfirming, isSuccess, error } = useKYCContract()
@@ -132,6 +133,7 @@ export function KYC(){
         toast(`Done KYC: ${nin}`)
         setKYC({ status: "verified" });
         resetKYC()
+        navigate({to: '/'})
         return { returnInfo, response }
     }
     return (

@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutRegisterImport } from './routes/_layout/register'
+import { Route as LayoutLandImport } from './routes/_layout/land'
 import { Route as LayoutKycImport } from './routes/_layout/kyc'
 
 // Create/Update Routes
@@ -32,6 +33,12 @@ const LayoutIndexRoute = LayoutIndexImport.update({
 const LayoutRegisterRoute = LayoutRegisterImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutLandRoute = LayoutLandImport.update({
+  id: '/land',
+  path: '/land',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -59,6 +66,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutKycImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/land': {
+      id: '/_layout/land'
+      path: '/land'
+      fullPath: '/land'
+      preLoaderRoute: typeof LayoutLandImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/register': {
       id: '/_layout/register'
       path: '/register'
@@ -80,12 +94,14 @@ declare module '@tanstack/react-router' {
 
 interface LayoutRouteChildren {
   LayoutKycRoute: typeof LayoutKycRoute
+  LayoutLandRoute: typeof LayoutLandRoute
   LayoutRegisterRoute: typeof LayoutRegisterRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutKycRoute: LayoutKycRoute,
+  LayoutLandRoute: LayoutLandRoute,
   LayoutRegisterRoute: LayoutRegisterRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
@@ -96,12 +112,14 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
   '/kyc': typeof LayoutKycRoute
+  '/land': typeof LayoutLandRoute
   '/register': typeof LayoutRegisterRoute
   '/': typeof LayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/kyc': typeof LayoutKycRoute
+  '/land': typeof LayoutLandRoute
   '/register': typeof LayoutRegisterRoute
   '/': typeof LayoutIndexRoute
 }
@@ -110,19 +128,21 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/kyc': typeof LayoutKycRoute
+  '/_layout/land': typeof LayoutLandRoute
   '/_layout/register': typeof LayoutRegisterRoute
   '/_layout/': typeof LayoutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/kyc' | '/register' | '/'
+  fullPaths: '' | '/kyc' | '/land' | '/register' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/kyc' | '/register' | '/'
+  to: '/kyc' | '/land' | '/register' | '/'
   id:
     | '__root__'
     | '/_layout'
     | '/_layout/kyc'
+    | '/_layout/land'
     | '/_layout/register'
     | '/_layout/'
   fileRoutesById: FileRoutesById
@@ -153,12 +173,17 @@ export const routeTree = rootRoute
       "filePath": "_layout.tsx",
       "children": [
         "/_layout/kyc",
+        "/_layout/land",
         "/_layout/register",
         "/_layout/"
       ]
     },
     "/_layout/kyc": {
       "filePath": "_layout/kyc.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/land": {
+      "filePath": "_layout/land.tsx",
       "parent": "/_layout"
     },
     "/_layout/register": {

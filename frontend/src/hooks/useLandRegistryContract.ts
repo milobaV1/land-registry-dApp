@@ -1,20 +1,44 @@
 import { useWaitForTransactionReceipt } from "wagmi"
 import { useLandRegistryWrite } from "./useLandRegistryWrite"
+import type { RegisterLandOnChain } from "@/service/interface/land.interface"
+import { decodeEventLog } from "viem"
+import { LAND_REGISTRY_CONTRACT_ABI } from "@/contracts/config"
+import { getLanduseNumber } from "@/lib/converter"
 
 export function useLandRegistry() {
   const { read, write, data: hash, isPending, error } = useLandRegistryWrite()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { isLoading: isConfirming, isSuccess, data: receipt } = useWaitForTransactionReceipt({ hash })
+
+  const getEventsFromReceipt = () => {
+    if(!receipt || !receipt.logs) return []
+    return receipt.logs
+    .map(log => {
+      try{
+        return decodeEventLog({
+          abi: LAND_REGISTRY_CONTRACT_ABI,
+          data: log.data,
+          topics: log.topics
+        })
+      }catch{
+        return null
+      }
+    }).filter(Boolean)
+  }
+
+  const getRegisteredLandId = () => {
+    const events = getEventsFromReceipt()
+    const landRegisteredEvent = events.find(event => event?.eventName === 'LandCreated')
+    return landRegisteredEvent && landRegisteredEvent.args ? landRegisteredEvent.args[0] : null
+  }
 
   const registerLand = async (
-    state: string,
-    lga: string,
-    area: number,
-    landUse: string,
-    ipfs: string
+    data: RegisterLandOnChain
   ) => {
+    const landuseNumber = getLanduseNumber(data.landuse)
+    console.log(`Area: ${data.area}, Land use: ${data.landuse}`)
     return write({
       functionName: "registerLand",
-      args: [state, lga, BigInt(area), landUse, ipfs],
+      args: [data.state, data.lga, BigInt(data.area), landuseNumber, data.ipfs],
     })
   }
 
@@ -103,6 +127,7 @@ export function useLandRegistry() {
 
   return {
     registerLand,
+    onChainLandId: getRegisteredLandId(),
     verifyLand,
     transferLand,
     getAllLand,
@@ -115,6 +140,7 @@ export function useLandRegistry() {
     getVerifiedLands,
     getTotalLandCount,
     getLandsByUse,
+    events: getEventsFromReceipt(),
     hash,
     isPending,
     isConfirming,

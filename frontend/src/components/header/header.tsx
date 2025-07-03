@@ -6,6 +6,8 @@ import { DiscoverWalletProviders } from "../metamask/WalletProviders";
 import { injected, useAccount, useConnect } from "wagmi";
 import { useSIWE } from "@/hooks/useSIWE";
 import { useAuthState } from "@/store/auth.store";
+import { useEffect } from "react";
+import { getKYCVerificationStatus } from "@/hooks/api/check-verification";
 
 export function Header(){
     const { signIn } = useSIWE()
@@ -26,7 +28,20 @@ export function Header(){
             console.error('Login Failed', error)
         }
     }
+    useEffect(() => {
+    const checkKycStatus = async () => {
+        if (isAuthenticated && address) {
+            try {
+               const kycStatus = await getKYCVerificationStatus(address)
+                if(kycStatus) setKycstatus(kycStatus)
+            } catch (error) {
+                console.error('Failed to check KYC status:', error);
+            }
+        }
+    };
 
+    checkKycStatus();
+}, [isAuthenticated, address, setKycstatus]);
     //Check when the component mounts for the kycstatus
     return(
         <div className="w-full bg-white fixed top-0 p-3 border border-b-3">
@@ -40,10 +55,9 @@ export function Header(){
                 <div className="flex items-center gap-20 text-[25px]">
                     <Link to="/"><p className="text-black font-light hover:underline hover:font-bold">Home</p></Link>
                     <Link to="/register"><p className="text-black font-light hover:underline hover:font-bold">Register Land</p></Link>
-                    <Link to="/"><p className="text-black font-light hover:underline hover:font-bold">My Land(s)</p></Link>
+                    <Link to="/land"><p className="text-black font-light hover:underline hover:font-bold">My Land(s)</p></Link>
                     {kycstatus == "verified"
                         ? (
-                            // put something to show that the user is verified
                             <span className="text-green-600 font-bold">Verified</span>
                           )
                         : (
