@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as LayoutSearchResultsImport } from './routes/_layout/search-results'
 import { Route as LayoutRegisterImport } from './routes/_layout/register'
 import { Route as LayoutLandImport } from './routes/_layout/land'
 import { Route as LayoutKycImport } from './routes/_layout/kyc'
@@ -27,6 +28,12 @@ const LayoutRoute = LayoutImport.update({
 const LayoutIndexRoute = LayoutIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutSearchResultsRoute = LayoutSearchResultsImport.update({
+  id: '/search-results',
+  path: '/search-results',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -80,6 +87,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutRegisterImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/search-results': {
+      id: '/_layout/search-results'
+      path: '/search-results'
+      fullPath: '/search-results'
+      preLoaderRoute: typeof LayoutSearchResultsImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/': {
       id: '/_layout/'
       path: '/'
@@ -96,6 +110,7 @@ interface LayoutRouteChildren {
   LayoutKycRoute: typeof LayoutKycRoute
   LayoutLandRoute: typeof LayoutLandRoute
   LayoutRegisterRoute: typeof LayoutRegisterRoute
+  LayoutSearchResultsRoute: typeof LayoutSearchResultsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
@@ -103,6 +118,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutKycRoute: LayoutKycRoute,
   LayoutLandRoute: LayoutLandRoute,
   LayoutRegisterRoute: LayoutRegisterRoute,
+  LayoutSearchResultsRoute: LayoutSearchResultsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }
 
@@ -114,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/kyc': typeof LayoutKycRoute
   '/land': typeof LayoutLandRoute
   '/register': typeof LayoutRegisterRoute
+  '/search-results': typeof LayoutSearchResultsRoute
   '/': typeof LayoutIndexRoute
 }
 
@@ -121,6 +138,7 @@ export interface FileRoutesByTo {
   '/kyc': typeof LayoutKycRoute
   '/land': typeof LayoutLandRoute
   '/register': typeof LayoutRegisterRoute
+  '/search-results': typeof LayoutSearchResultsRoute
   '/': typeof LayoutIndexRoute
 }
 
@@ -130,20 +148,22 @@ export interface FileRoutesById {
   '/_layout/kyc': typeof LayoutKycRoute
   '/_layout/land': typeof LayoutLandRoute
   '/_layout/register': typeof LayoutRegisterRoute
+  '/_layout/search-results': typeof LayoutSearchResultsRoute
   '/_layout/': typeof LayoutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/kyc' | '/land' | '/register' | '/'
+  fullPaths: '' | '/kyc' | '/land' | '/register' | '/search-results' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/kyc' | '/land' | '/register' | '/'
+  to: '/kyc' | '/land' | '/register' | '/search-results' | '/'
   id:
     | '__root__'
     | '/_layout'
     | '/_layout/kyc'
     | '/_layout/land'
     | '/_layout/register'
+    | '/_layout/search-results'
     | '/_layout/'
   fileRoutesById: FileRoutesById
 }
@@ -175,6 +195,7 @@ export const routeTree = rootRoute
         "/_layout/kyc",
         "/_layout/land",
         "/_layout/register",
+        "/_layout/search-results",
         "/_layout/"
       ]
     },
@@ -188,6 +209,10 @@ export const routeTree = rootRoute
     },
     "/_layout/register": {
       "filePath": "_layout/register.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/search-results": {
+      "filePath": "_layout/search-results.tsx",
       "parent": "/_layout"
     },
     "/_layout/": {

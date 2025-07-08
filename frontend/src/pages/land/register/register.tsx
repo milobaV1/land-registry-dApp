@@ -22,11 +22,12 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
 import { states } from '@/lib/states';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePinataUpload } from '@/hooks/usePinataUpload';
-import type { RegisterLandOnChain } from '@/service/interface/land.interface';
+import type { RegisterLand, RegisterLandOnChain } from '@/service/interface/land.interface';
 import { useLandRegistry } from '@/hooks/useLandRegistryContract';
 import { useAccount } from 'wagmi';
+import { registerLandOffChain } from './api/register';
 
 const formSchema = z.object({
   state: z.string(),
@@ -39,7 +40,9 @@ const formSchema = z.object({
 export function Register() {
   const { upload, uploadStatus } = usePinataUpload()
   const { address, isConnected } = useAccount() 
-  const { registerLand, onChainLandId, isPending, isConfirming, isSuccess, error } = useLandRegistry()
+   const pendingToastId = useRef<string | number | null>(null);
+  const confirmingToastId = useRef<string | number | null>(null);
+  const { registerLand, onChainLandId, isPending, isConfirming, isSuccess, error, waitError } = useLandRegistry()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,6 +55,8 @@ export function Register() {
   });
 
   const [lgaOptions, setLgaOptions] = useState<string[]>([]);
+  const [formValues, setFormValues] = useState<z.infer<typeof formSchema> | null>(null);
+
 
   useEffect(() => {
     const selectedState = states.find((s) => s.value === form.watch('state'));
@@ -66,6 +71,7 @@ export function Register() {
   }
   console.log(address)
     console.log(values);
+    setFormValues(values);
     toast(`Land Registered: ${values.area} sqm in ${values.lga}, ${values.state}`);
     const { state, lga, area, landuse, picture } = values
     try {
@@ -87,29 +93,122 @@ export function Register() {
 
   useEffect(() => {
     if (isPending) {
-      toast.loading("Sending transaction...")
+      if (pendingToastId.current) {
+        toast.dismiss(pendingToastId.current);
+      }
+      if (confirmingToastId.current) {
+        toast.dismiss(confirmingToastId.current);
+      }
+      
+      pendingToastId.current = toast.loading("Sending transaction...");
+    } else {
+      if (pendingToastId.current) {
+        toast.dismiss(pendingToastId.current);
+        pendingToastId.current = null;
+      }
     }
   }, [isPending])
 
   useEffect(() => {
     if (isConfirming) {
-      toast.loading("Confirming on blockchain...")
+      // Dismiss pending toast if it exists
+      if (pendingToastId.current) {
+        toast.dismiss(pendingToastId.current);
+        pendingToastId.current = null;
+      }
+      
+      confirmingToastId.current = toast.loading("Confirming on blockchain...");
+    } else {
+      // Dismiss confirming toast when no longer confirming
+      if (confirmingToastId.current) {
+        toast.dismiss(confirmingToastId.current);
+        confirmingToastId.current = null;
+      }
     }
   }, [isConfirming])
 
+   
+  // Handle success state
   useEffect(() => {
-    if (isSuccess && onChainLandId) {
-      toast.success(`🎉 Land registered with ID: ${onChainLandId}`)
-      // Do something with the landId here!
+    if (isSuccess) {
+      if (pendingToastId.current) {
+        toast.dismiss(pendingToastId.current);
+        pendingToastId.current = null;
+      }
+      if (confirmingToastId.current) {
+        toast.dismiss(confirmingToastId.current);
+        confirmingToastId.current = null;
+      }
+      
+      // Debug logging
+      console.log('Transaction successful!');
+      console.log('onChainLandId:', onChainLandId);
+      
+      const handleRegisterOffChain = async () => {
+        if (onChainLandId) {
+          toast.success(`🎉 Land registered with ID: ${onChainLandId}`);
+          if (formValues) {
+            const {state, lga, area, landuse, picture} = formValues;
+            if(address){
+              const data: RegisterLand = {
+                currentOwner: address,
+                state,
+                lga,
+                area,
+                landUse: landuse,
+                landIdOnChain: Number(onChainLandId)
+              }
+              console.log(data)
+              await registerLandOffChain(data)
+            }
+          }
+        } else {
+          toast.success(`🎉 Land registered successfully!`);
+          console.warn('onChainLandId is not available:', onChainLandId);
+        }
+        // Reset form on success
+        form.reset();
+      };
+
+      handleRegisterOffChain();
     }
   }, [isSuccess, onChainLandId])
 
+
+  
   useEffect(() => {
     if (error) {
-      toast.error("Transaction failed")
-      console.error(error)
+      // Dismiss any loading toasts
+      if (pendingToastId.current) {
+        toast.dismiss(pendingToastId.current);
+        pendingToastId.current = null;
+      }
+      if (confirmingToastId.current) {
+        toast.dismiss(confirmingToastId.current);
+        confirmingToastId.current = null;
+      }
+      
+      toast.error("Transaction failed");
+      console.error(error);
     }
   }, [error])
+
+  useEffect(() => {
+    if (waitError) {
+      // Dismiss any loading toasts
+      if (pendingToastId.current) {
+        toast.dismiss(pendingToastId.current);
+        pendingToastId.current = null;
+      }
+      if (confirmingToastId.current) {
+        toast.dismiss(confirmingToastId.current);
+        confirmingToastId.current = null;
+      }
+      
+      console.error("Wait error:", waitError);
+      toast.error("Transaction failed to send");
+    }
+  }, [waitError])
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-[#338e64]">
@@ -227,8 +326,12 @@ export function Register() {
               )}
             />
 
-            <Button type="submit" className="w-full bg-[#338e64] text-white hover:bg-[#27694b]">
-              Register Land
+            <Button 
+              type="submit" 
+              className="w-full bg-[#338e64] text-white hover:bg-[#27694b]"
+              disabled={isPending || isConfirming}
+            >
+              {isPending || isConfirming ? 'Processing...' : 'Register Land'}
             </Button>
           </form>
         </Form>

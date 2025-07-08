@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum LandUse {
     RESIDENTIAL = 'residential',
@@ -31,6 +31,6 @@ export class Land {
     @Column({unique: true})
     landIdOnChain: number;
 
-    @Column()
+    @CreateDateColumn()
     registrationDate: Date;
 }

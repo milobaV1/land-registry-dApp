@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { LandsService } from './lands.service';
 import { CreateLandDto } from './dto/create-land.dto';
 import { UpdateLandDto } from './dto/update-land.dto';
+import { SearchLandDto } from './dto/search-land-dto';
 
 @Controller('lands')
 export class LandsController {
@@ -9,6 +10,7 @@ export class LandsController {
 
   @Post()
   create(@Body() createLandDto: CreateLandDto) {
+    console.log("Received DTO:", createLandDto);
     return this.landsService.create(createLandDto);
   }
 
@@ -17,9 +19,19 @@ export class LandsController {
     return this.landsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.landsService.findOne(+id);
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.landsService.findOne(+id);
+  // }
+
+  @Get('/get-land-by-address/:address')
+  findByAddress(@Param('address') address: string){
+    return this.landsService.findByAddress(address)
+  }
+
+  @Get('search-and-filter')
+  search(@Query() query: SearchLandDto){
+    return this.landsService.search(query)
   }
 
   @Patch(':id')

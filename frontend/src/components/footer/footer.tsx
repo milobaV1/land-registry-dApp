@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router"
 
 export function Footer(){
     return(
-        <div className="h-[20rem] bg-[#111827] w-full p-10">
+        <div className="h-[20rem] bg-[#111827] w-full p-10 bottom-0">
             <div className="grid grid-cols-4 gap-10 mb-10">
             <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-4">

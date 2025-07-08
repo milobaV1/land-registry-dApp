@@ -4,12 +4,13 @@ import type { RegisterLandOnChain } from "@/service/interface/land.interface"
 import { decodeEventLog } from "viem"
 import { LAND_REGISTRY_CONTRACT_ABI } from "@/contracts/config"
 import { getLanduseNumber } from "@/lib/converter"
+import { useMemo } from "react"
 
 export function useLandRegistry() {
   const { read, write, data: hash, isPending, error } = useLandRegistryWrite()
-  const { isLoading: isConfirming, isSuccess, data: receipt } = useWaitForTransactionReceipt({ hash })
+  const { isLoading: isConfirming, isSuccess, data: receipt, error: waitError } = useWaitForTransactionReceipt({ hash })
 
-  const getEventsFromReceipt = () => {
+  const decodedEvents = useMemo(() => {
     if(!receipt || !receipt.logs) return []
     return receipt.logs
     .map(log => {
@@ -23,13 +24,32 @@ export function useLandRegistry() {
         return null
       }
     }).filter(Boolean)
-  }
+  }, [receipt])
 
-  const getRegisteredLandId = () => {
-    const events = getEventsFromReceipt()
-    const landRegisteredEvent = events.find(event => event?.eventName === 'LandCreated')
-    return landRegisteredEvent && landRegisteredEvent.args ? landRegisteredEvent.args[0] : null
-  }
+  // Memoize the land ID extraction
+  const onChainLandId = useMemo(() => {
+    if (!decodedEvents.length) return null
+    
+    console.log('All decoded events:', decodedEvents) // Debug log
+    
+    const landRegisteredEvent = decodedEvents.find(event => event?.eventName === 'LandCreated')
+    console.log('LandCreated event:', landRegisteredEvent) // Debug log
+    
+    if (landRegisteredEvent && landRegisteredEvent.args) {
+      console.log('Event args:', landRegisteredEvent.args) // Debug log
+      
+      const argsObj = landRegisteredEvent.args as any
+      const landId = argsObj.landId
+      
+      // Convert BigInt to string for display
+      if (landId !== undefined && landId !== null) {
+        return landId.toString()
+      }
+    }
+    
+    return null
+  }, [decodedEvents])
+
 
   const registerLand = async (
     data: RegisterLandOnChain
@@ -127,7 +147,7 @@ export function useLandRegistry() {
 
   return {
     registerLand,
-    onChainLandId: getRegisteredLandId(),
+    onChainLandId,
     verifyLand,
     transferLand,
     getAllLand,
@@ -140,11 +160,13 @@ export function useLandRegistry() {
     getVerifiedLands,
     getTotalLandCount,
     getLandsByUse,
-    events: getEventsFromReceipt(),
+    events: decodedEvents,
     hash,
     isPending,
     isConfirming,
     isSuccess,
     error,
+    waitError,
+    receipt
   }
 }
