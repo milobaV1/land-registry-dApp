@@ -9,16 +9,11 @@ import Three from "@/assets/svg/3.svg"
 export default function LandingPage(){
     return(
         <div className="h-full w-full flex flex-col pt-3">
-            <div className="h-[50rem] w-full bg-[#338e64] flex flex-col items-center justify-center gap-10 p-10">
+            <div className="h-[45rem] w-full bg-[#338e64] flex flex-col items-center justify-center gap-10 p-10">
                 <h1 className="text-white">Decentralized Land Registry</h1>
                 <div className="flex flex-col items-center text-white">
                     <h3>Secure, transparent, and immutable land ownership records powered by blockchain</h3>
                     <h3>technology. Register, verify, and transfer land ownership with complete trust and transparency.</h3>
-                </div>
-                <div className="flex gap-10">
-                    <Button size={"lg"}>Register Land</Button>
-                    <Button size={"lg"}>Verify Land</Button>
-                    
                 </div>
                  <div className="flex flex-col items-center text-white">
                     <h2 className="text-[30px]">Why Choose Our Platform?</h2>

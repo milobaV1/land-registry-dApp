@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useLandRegistry } from "@/hooks/useLandRegistryContract"
 import type { BlockchainLandData, LandResponse, VerificationResult } from "@/service/interface/land.interface"
+import { Button } from "../ui/button"
 
 export function LandCard(land: LandResponse) {
     const { getLand } = useLandRegistry()
@@ -92,92 +93,111 @@ export function LandCard(land: LandResponse) {
 
     return (
         <>
-            <div className="h-[25rem] w-[30rem] border-2 border-gray-200 rounded-xl shadow-xl bg-gradient-to-br from-white to-gray-50 hover:shadow-2xl transition-all duration-300 hover:scale-105 p-8">
-                {/* Header with Land ID */}
-                <div className="mb-6 pb-3 border-b border-gray-200">
-                    <h3 className="text-xl font-bold text-gray-800 mb-1">Land Registry</h3>
-                    <p className="text-sm text-blue-600 font-semibold bg-blue-50 px-3 py-1 rounded-full inline-block">
-                        ID: {land.landIdOnChain}
-                    </p>
-                </div>
-                
-                {/* Content Grid */}
-                <div className="grid grid-cols-2 gap-6 h-32">
-                    {/* Left Column */}
-                    <div className="flex flex-col justify-between space-y-3">
-                        <div className="group">
-                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Area</p>
-                            <p className="text-lg font-semibold text-gray-800 group-hover:text-green-600 transition-colors">
-                                {land.area}
-                            </p>
-                        </div>
-                        <div className="group">
-                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Land Use</p>
-                            <p className="text-lg font-semibold text-gray-800 group-hover:text-green-600 transition-colors">
-                                {land.landUse}
-                            </p>
-                        </div>
-                    </div>
-                    
-                    {/* Right Column */}
-                    <div className="flex flex-col justify-between space-y-3">
-                        <div className="group">
-                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">LGA</p>
-                            <p className="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
-                                {land.lga}
-                            </p>
-                        </div>
-                        <div className="group">
-                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">State</p>
-                            <p className="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
-                                {land.state}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                {/* Footer with Registration Date and Verify Button */}
-                <div className="mt-6 pt-3 border-t border-gray-200">
-                    <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs text-gray-500 uppercase tracking-wide">Registration Date</span>
-                        <span className="text-sm font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded">
-                            {land.registrationDate instanceof Date ? land.registrationDate.toLocaleDateString() : land.registrationDate}
-                        </span>
-                    </div>
-                    
-                    {/* Verify Button */}
-                    <button 
-                        className={`w-full font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 group ${
-                            isLoading 
-                                ? 'bg-gray-400 cursor-not-allowed' 
-                                : 'bg-green-600 hover:bg-green-700 text-white'
-                        }`}
-                        onClick={handleVerifyClick}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                Verifying...
-                            </>
-                        ) : (
-                            <>
-                                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Verify Land On Chain
-                            </>
-                        )}
-                    </button>
-                </div>
-
-                {/* Error Message */}
-                {error && (
-                    <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-sm text-red-600">{error}</p>
-                    </div>
-                )}
+            <div className="w-full max-w-4xl mx-auto border-2 border-gray-200 rounded-2xl shadow-xl bg-gradient-to-br from-white via-gray-50 to-blue-50 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] p-8">
+    {/* Header with Land ID */}
+    <div className="mb-8 pb-4 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+            <div>
+                <h3 className="text-3xl font-bold text-gray-800 mb-2">Land Registry Certificate</h3>
+                <p className="text-gray-600">Official blockchain-verified land registration</p>
             </div>
+        </div>
+    </div>
+    
+    {/* Content Grid - Now in 3 columns for better use of space */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        {/* Left Column */}
+        <div className="space-y-6">
+            <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Land Id On Chain</p>
+                <p className="text-2xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
+                    {land.landIdOnChain}
+                </p>
+            </div>
+            <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Land Area</p>
+                <p className="text-2xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
+                    {land.area}
+                </p>
+            </div>
+        </div>
+        
+        {/* Middle Column */}
+        <div className="space-y-6">
+            <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Land Use</p>
+                <p className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                    {land.landUse}
+                </p>
+            </div>
+            <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Local Government Area</p>
+                <p className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                    {land.lga}
+                </p>
+            </div>
+        </div>
+        
+        {/* Right Column - Registration Info */}
+        <div className="space-y-6">
+            <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">State</p>
+                <p className="text-2xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
+                    {land.state}
+                </p>
+            </div>
+            <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Registration Date</p>
+                <p className="text-lg font-bold text-gray-800 group-hover:text-green-600 transition-colors">
+                    {land.registrationDate instanceof Date ? land.registrationDate.toLocaleDateString() : land.registrationDate}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    {/* Footer with Verify Button */}
+    <hr />
+    <div className="pt-6 border-gray-200 w-[10rem]">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Verify Button */}
+            <Button
+                className={`flex-1 font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 group text-lg ${
+                    isLoading 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg hover:shadow-xl'
+                }`}
+                onClick={handleVerifyClick}
+                disabled={isLoading}
+            >
+                {isLoading ? (
+                    <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Verifying on blockchain...
+                    </>
+                ) : (
+                    <>
+                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Verify Land Ownership on Blockchain
+                    </>
+                )}
+            </Button>
+        </div>
+    </div>
+
+    {/* Error Message */}
+    {error && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <p className="text-sm text-red-600 font-medium">{error}</p>
+            </div>
+        </div>
+    )}
+</div>
 
             {/* Modal */}
             {isModalOpen && (
@@ -284,9 +304,8 @@ export function LandCard(land: LandResponse) {
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Current Owner</p>
                                                 <p className="text-sm font-mono text-gray-800 bg-white px-2 py-1 rounded border">
-                                                    {blockchainData.currentOwner}
+                                                    {formatAddress(blockchainData.currentOwner)}
                                                 </p>
-                                                <p className="text-xs text-gray-500 mt-1">{formatAddress(blockchainData.currentOwner)}</p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Transfer Status</p>

@@ -33,47 +33,62 @@ export class LandsService {
   }
 
   async findByAddress(address: string){
-    const land = await this.landRepository.findOne({
+    const land = await this.landRepository.find({
       where: { currentOwner: address },
     });
 
     return land
   }
 
-  async search(searchLandDto: SearchLandDto) {
-  const { currentOwner, landIdOnChain, lga, state, search } = searchLandDto;
+//   async search(searchLandDto: SearchLandDto) {
+//   const { currentOwner, landIdOnChain, lga, state, search } = searchLandDto;
 
-  const queryBuilder = this.landRepository.createQueryBuilder('land');
+//   const queryBuilder = this.landRepository.createQueryBuilder('land');
 
-  if (search) {
-    queryBuilder.andWhere(
-      new Brackets((qb) => {
-        qb.where('LOWER(land.currentOwner) LIKE LOWER(:search)', { search: `%${search}%` })
-          .orWhere('CAST(land.landIdOnChain AS TEXT) LIKE :search', { search: `%${search}%`  })
-          .orWhere('LOWER(land.state) LIKE LOWER(:search)', { search: `%${search}%` })
-          .orWhere('LOWER(land.lga) LIKE LOWER(:search)', { search: `%${search}%` });
-      })
-    );
+//   if (search) {
+//     queryBuilder.andWhere(
+//       new Brackets((qb) => {
+//         qb.where('LOWER(land.currentOwner) LIKE LOWER(:search)', { search: `%${search}%` })
+//           .orWhere('CAST(land.landIdOnChain AS TEXT) LIKE :search', { search: `%${search}%`  })
+//           .orWhere('LOWER(land.state) LIKE LOWER(:search)', { search: `%${search}%` })
+//           .orWhere('LOWER(land.lga) LIKE LOWER(:search)', { search: `%${search}%` });
+//       })
+//     );
+//   }
+
+//   if (currentOwner) {
+//     queryBuilder.andWhere('LOWER(land.address) = LOWER(:address)', { currentOwner });
+//   }
+
+//   if (landIdOnChain) {
+//     queryBuilder.andWhere('land.landIdOnChain = :landIdOnChain', { landIdOnChain });
+//   }
+
+//   if (lga) {
+//     queryBuilder.andWhere('LOWER(land.lga) = LOWER(:lga)', { lga });
+//   }
+
+//   if (state) {
+//     queryBuilder.andWhere('LOWER(land.state) = LOWER(:state)', { state });
+//   }
+
+//   return await queryBuilder.getMany();
+// }
+
+async search(searchLandDto: SearchLandDto) {
+  const { currentOwner, landIdOnChain } = searchLandDto;
+
+  if (!currentOwner || !landIdOnChain) {
+    throw new BadRequestException("Both address and landIdOnChain are required");
   }
 
-  if (currentOwner) {
-    queryBuilder.andWhere('LOWER(land.address) = LOWER(:address)', { currentOwner });
-  }
-
-  if (landIdOnChain) {
-    queryBuilder.andWhere('land.landIdOnChain = :landIdOnChain', { landIdOnChain });
-  }
-
-  if (lga) {
-    queryBuilder.andWhere('LOWER(land.lga) = LOWER(:lga)', { lga });
-  }
-
-  if (state) {
-    queryBuilder.andWhere('LOWER(land.state) = LOWER(:state)', { state });
-  }
-
-  return await queryBuilder.getMany();
+  return await this.landRepository
+    .createQueryBuilder('land')
+    .where('LOWER(land.currentOwner) = LOWER(:currentOwner)', { currentOwner })
+    .andWhere('land.landIdOnChain = :landIdOnChain', { landIdOnChain })
+    .getMany();
 }
+
   update(id: number, updateLandDto: UpdateLandDto) {
     return `This action updates a #${id} land`;
   }

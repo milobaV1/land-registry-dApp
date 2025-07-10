@@ -1,7 +1,12 @@
+// export interface Search {
+//   search?: string;
+//   address?: string;
+//   state?: string;
+//   lga?: string;
+//   landIdOnChain?: string;
+// }
+
 export interface Search {
-  search?: string;
-  address?: string;
-  state?: string;
-  lga?: string;
-  landIdOnChain?: string;
+  currentOwner: string;
+  landIdOnChain: number;
 }

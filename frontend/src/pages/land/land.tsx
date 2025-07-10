@@ -38,17 +38,17 @@ export function Land(){
         fetchLands();
     }, [address, !!isConnected]);
     return(
-        <div className="h-screen p-20">
+        <div className="h-full p-20">
             {land.length > 0 ? (
-                <div className="grid gap-4">
+                <div className="grid grid-cols-1 gap-4">
                     {land.map((l, index) => (
                         <LandCard key={l.id || index} {...l} />
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-8">
-                    <h2 className="text-xl font-semibold mb-2">No Lands Found</h2>
-                    <p className="text-gray-600">You don't own any lands yet.</p>
+                <div className="text-center py-8 h-screen">
+                    <h2 className="text-[90px] font-semibold mb-2">No Lands Found</h2>
+                    <p className="text-gray-600 text-[20px]">You don't own any lands yet.</p>
                 </div>
             )}
         </div>
