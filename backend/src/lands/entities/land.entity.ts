@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { BeforeInsert, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum LandUse {
     RESIDENTIAL = 'residential',
@@ -12,6 +13,12 @@ export class Land {
 
     @Column()
     currentOwner: string;
+
+    @Column()
+    landAddress: string;
+
+    @Column()
+    dateOfIssuance: Date;
 
     @Column()
     state: string;
@@ -33,4 +40,15 @@ export class Land {
 
     @CreateDateColumn()
     registrationDate: Date;
+
+    @ManyToOne(() => User, (user) => user.lands, { onDelete: 'CASCADE' })
+    user: User;
+
+    @BeforeInsert()
+    async lowerCase(){
+        this.landAddress = this.landAddress.toLowerCase();
+        this.state = this.state.toLowerCase().trim();
+        this.lga = this.lga.toLowerCase().trim();
+    }
+    
 }

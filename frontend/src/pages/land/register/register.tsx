@@ -28,8 +28,23 @@ import type { RegisterLand, RegisterLandOnChain } from '@/service/interface/land
 import { useLandRegistry } from '@/hooks/useLandRegistryContract';
 import { useAccount } from 'wagmi';
 import { registerLandOffChain } from './api/register';
+import { useAuthState } from '@/store/auth.store';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon, Eye, Info } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns/format';
+import { useNavigate } from '@tanstack/react-router';
 
 const formSchema = z.object({
+  cOfONo: z.string().regex(/^\d{2}\|\d{2}\|\d{4}[A-Z]{2}$/, {
+    message: "C of O number must be in format: 12|34|5678AB"
+  }),
+  landAddress: z.string().min(10, {
+    message: "Address must be at least 10 characters long"
+  }),
+  dateOfIssuance: z.coerce.date({
+    required_error: 'Date of Issuance is required',
+  }),
   state: z.string(),
   lga: z.string(),
   area: z.coerce.number().min(1),
@@ -40,12 +55,17 @@ const formSchema = z.object({
 export function Register() {
   const { upload, uploadStatus } = usePinataUpload()
   const { address, isConnected } = useAccount() 
-   const pendingToastId = useRef<string | number | null>(null);
+  const navigate = useNavigate()
+  // const { kycstatus } = useAuthState()
+  const pendingToastId = useRef<string | number | null>(null);
   const confirmingToastId = useRef<string | number | null>(null);
   const { registerLand, onChainLandId, isPending, isConfirming, isSuccess, error, waitError } = useLandRegistry()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      cOfONo: '',
+      landAddress: '',
+      dateOfIssuance: new Date() || undefined,
       state: '',
       lga: '',
       area: 0,
@@ -56,7 +76,30 @@ export function Register() {
 
   const [lgaOptions, setLgaOptions] = useState<string[]>([]);
   const [formValues, setFormValues] = useState<z.infer<typeof formSchema> | null>(null);
+  const [date, setDate] = useState<Date>();
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    if (selectedDate) {
+      form.setValue('dateOfIssuance', selectedDate); 
+    }
+  };
 
+  // Format C of O number as user types
+  const formatCofNumber = (value: string) => {
+    // Remove all non-alphanumeric characters
+    const cleaned = value.replace(/[^0-9A-Z]/g, '');
+    
+    // Apply formatting: xx|xx|xxxxyy
+    if (cleaned.length <= 2) {
+      return cleaned;
+    } else if (cleaned.length <= 4) {
+      return `${cleaned.slice(0, 2)}|${cleaned.slice(2)}`;
+    } else if (cleaned.length <= 8) {
+      return `${cleaned.slice(0, 2)}|${cleaned.slice(2, 4)}|${cleaned.slice(4)}`;
+    } else {
+      return `${cleaned.slice(0, 2)}|${cleaned.slice(2, 4)}|${cleaned.slice(4, 8)}${cleaned.slice(8, 10)}`;
+    }
+  };
 
   useEffect(() => {
     const selectedState = states.find((s) => s.value === form.watch('state'));
@@ -72,12 +115,13 @@ export function Register() {
   console.log(address)
     console.log(values);
     setFormValues(values);
-    toast(`Land Registered: ${values.area} sqm in ${values.lga}, ${values.state}`);
-    const { state, lga, area, landuse, picture } = values
+    toast(`Land Registered: ${values.area} sqm in ${values.lga}, ${values.state} with C of O: ${values.cOfONo}`);
+    const { cOfONo, landAddress, dateOfIssuance, state, lga, area, landuse, picture } = values
     try {
       const ipfs = await upload(picture)
     if(ipfs){
       const onChainData: RegisterLandOnChain = {
+        cOfONo,
         state,
         lga,
         area,
@@ -148,10 +192,12 @@ export function Register() {
         if (onChainLandId) {
           toast.success(`🎉 Land registered with ID: ${onChainLandId}`);
           if (formValues) {
-            const {state, lga, area, landuse, picture} = formValues;
+            const {cOfONo, landAddress, dateOfIssuance, state, lga, area, landuse, picture} = formValues;
             if(address){
               const data: RegisterLand = {
                 currentOwner: address,
+                landAddress,
+                dateOfIssuance,
                 state,
                 lga,
                 area,
@@ -168,6 +214,7 @@ export function Register() {
         }
         // Reset form on success
         form.reset();
+        navigate({to:"/land"})
       };
 
       handleRegisterOffChain();
@@ -190,6 +237,7 @@ export function Register() {
       
       toast.error("Transaction failed");
       console.error(error);
+      navigate({to:'/land'})
     }
   }, [error])
 
@@ -211,11 +259,82 @@ export function Register() {
   }, [waitError])
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-[#338e64]">
+    <div className="flex items-center justify-center w-full h-full bg-[#338e64] py-15">
       <div className="bg-white w-[50rem] border rounded-lg shadow-lg py-8 px-10 space-y-6">
         <h2 className="text-2xl font-semibold text-center text-[#338e64]">Register Land</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Certificate of Occupancy Number */}
+            <FormField
+              control={form.control}
+              name="cOfONo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Certificate of Occupancy Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="12|34|5678AB"
+                      {...field}
+                      onChange={(e) => {
+                        const formatted = formatCofNumber(e.target.value.toUpperCase());
+                        field.onChange(formatted);
+                      }}
+                      maxLength={12}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Property Address */}
+            <FormField
+              control={form.control}
+              name="landAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Property Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter full property address"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Date of Issuance */}
+            <FormField
+              control={form.control}
+              name="dateOfIssuance"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Date of C of O Issuance</FormLabel>
+                  <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                        <Button className="w-[90%] justify-start text-left font-normal border-slate-200 border rounded-l hover:bg-gray-50 hover:text-black hover:border-transparent bg-white text-slate-600 text-muted-foreground">
+                                            <CalendarIcon size={20} className="w-4 h-4 mr-2 " />
+                                            {date ? format(date, 'MM/dd/yyyy') : 'Please select a date'}
+                                        </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                        mode="single"
+                                        selected={date}
+                                        onSelect={handleDateSelect}
+                                        className="text-black bg-white shadow-2xl"
+                                        />
+                                    </PopoverContent>
+                                    <FormMessage />
+                                    </Popover>
+                </FormItem>
+              )}
+            />
+
             {/* State */}
             <div className='flex justify-between'>
             <FormField 
@@ -335,6 +454,29 @@ export function Register() {
             </Button>
           </form>
         </Form>
+        <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <Info className="w-6 h-6 text-blue-600 mt-0.5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                Document Visibility Notice
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Eye className="w-5 h-5 text-blue-600" />
+                  <span className="text-blue-800 font-medium">
+                    Your Certificate of Occupancy will be publicly accessible
+                  </span>
+                </div>
+                <p className="text-blue-700 text-sm leading-relaxed">
+                  Once uploaded, your C of O document will be visible to anyone who searches for property information in our public registry. This promotes transparency in land ownership and helps prevent fraudulent claims.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

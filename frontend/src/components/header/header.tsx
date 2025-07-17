@@ -17,7 +17,7 @@ export function Header(){
     const { connect } = useConnect()
     const { isConnected } = useAccount()
     const [currentOwner, setCurrentOwner] = useState("")
-    const [landIdOnChain, setLandIdOnChain] = useState("")
+    const [landId, setLandId] = useState("")
     const [isSearchExpanded, setIsSearchExpanded] = useState(false)
     const navigate = useNavigate();
 
@@ -37,17 +37,17 @@ export function Header(){
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!currentOwner || !landIdOnChain) {
+        if (!currentOwner || !landId) {
             toast("Both Address and Land ID are required.");
             return;
         }
         try {
             navigate({
                 to: "/search-results",
-                search: { currentOwner, landIdOnChain: Number(landIdOnChain) },
+                search: { currentOwner, landId },
             });
             setCurrentOwner("");
-            setLandIdOnChain("")
+            setLandId("")
             setIsSearchExpanded(false)
         } catch (err) {
             console.error("Search failed:", err);
@@ -124,8 +124,8 @@ export function Header(){
                                         type="text"
                                         placeholder="Land ID"
                                         className="pl-10 w-28 border-0 bg-transparent focus:ring-0 text-sm"
-                                        value={landIdOnChain}
-                                        onChange={(e) => setLandIdOnChain(e.target.value)}
+                                        value={landId}
+                                        onChange={(e) => setLandId(e.target.value)}
                                     />
                                 </div>
                                 
@@ -140,7 +140,7 @@ export function Header(){
                                     onClick={() => {
                                         setIsSearchExpanded(false);
                                         setCurrentOwner("");
-                                        setLandIdOnChain("");
+                                        setLandId("");
                                     }}
                                     className="text-gray-400 hover:text-gray-600"
                                 >
@@ -152,7 +152,7 @@ export function Header(){
                 </div>
                 
                 <Button className="bg-[#379669]" onClick={handleLogin}>
-                    {isAuthenticated? `Connected: ${address?.slice(0,6)}...`: "Connect Wallet"}
+                    {isAuthenticated? `Connected`: "Connect Wallet"}
                 </Button>
             </div>
         </div>

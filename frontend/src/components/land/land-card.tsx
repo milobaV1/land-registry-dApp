@@ -82,12 +82,12 @@ export function LandCard(land: LandResponse) {
     }
 
     const getLandUseText = (landUse: number) => {
-        const landUseTypes = ['Residential', 'Commercial', 'Industrial', 'Agricultural', 'Mixed Use']
+        const landUseTypes = ['Residential', 'Industrial']
         return landUseTypes[landUse] || 'Unknown'
     }
 
     const getTransferStatusText = (status: number) => {
-        const statusTypes = ['Active', 'Pending Transfer', 'Transferred', 'Locked']
+        const statusTypes = ['None', 'Pending Transfer', 'Approved']
         return statusTypes[status] || 'Unknown'
     }
 
@@ -109,9 +109,9 @@ export function LandCard(land: LandResponse) {
         {/* Left Column */}
         <div className="space-y-6">
             <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
-                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Land Id On Chain</p>
-                <p className="text-2xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
-                    {land.landIdOnChain}
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Land Id</p>
+                <p className="text-lg font-bold text-gray-800 group-hover:text-green-600 transition-colors">
+                    {land.id}
                 </p>
             </div>
             <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
@@ -147,9 +147,9 @@ export function LandCard(land: LandResponse) {
                 </p>
             </div>
             <div className="group p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow h-[6rem]">
-                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Registration Date</p>
+                <p className="text-sm text-gray-500 uppercase tracking-wide mb-2 font-medium">Date of Issuance</p>
                 <p className="text-lg font-bold text-gray-800 group-hover:text-green-600 transition-colors">
-                    {land.registrationDate instanceof Date ? land.registrationDate.toLocaleDateString() : land.registrationDate}
+                    {new Date(land.dateOfIssuance).toLocaleDateString()}
                 </p>
             </div>
         </div>
@@ -256,7 +256,7 @@ export function LandCard(land: LandResponse) {
                             )}
                         </div>
 
-                        {/* Modal Content */}
+                       {/* Modal Content */}
                         <div className="p-6">
                             {blockchainData && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -271,7 +271,19 @@ export function LandCard(land: LandResponse) {
                                         <div className="space-y-3">
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Land ID</p>
-                                                <p className="text-lg font-medium text-gray-800">{blockchainData.landId.toString()}</p>
+                                                <p className="text-lg font-medium text-gray-800">{land.id}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">C of O Number</p>
+                                                <p className="text-lg font-medium text-gray-800">{blockchainData.cOfONo}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Property Address</p>
+                                                <p className="text-lg font-medium text-gray-800">{land.landAddress}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Date of C of O Issuance</p>
+                                                <p className="text-lg font-medium text-gray-800">{new Date(land.dateOfIssuance).toLocaleDateString()}</p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase tracking-wide">State</p>
@@ -334,7 +346,7 @@ export function LandCard(land: LandResponse) {
                                         </h3>
                                         <div className="space-y-3">
                                             <div>
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Registration Date</p>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide">Registration Date on Blockchain</p>
                                                 <p className="text-sm font-medium text-gray-800">{formatTimestamp(blockchainData.registrationDate)}</p>
                                             </div>
                                             <div>
@@ -358,6 +370,15 @@ export function LandCard(land: LandResponse) {
                                                 <p className="text-sm font-mono text-gray-800 bg-white px-2 py-1 rounded border break-all">
                                                     {blockchainData.landIpfs}
                                                 </p>
+                                                <button
+                                                    onClick={() => window.open(`https://ipfs.io/ipfs/${blockchainData.landIpfs}`, '_blank')}
+                                                    className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                    </svg>
+                                                    View Certificate Document
+                                                </button>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-500 uppercase tracking-wide">Ownership History</p>

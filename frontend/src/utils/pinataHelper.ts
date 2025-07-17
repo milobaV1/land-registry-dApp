@@ -23,7 +23,5 @@ const pinata = new PinataSDK({
         throw new Error("Upload failed")
     }
     const ipfsLink = await pinata.gateways.public.convert(upload.cid)
-    localStorage.setItem('cid', upload.cid)
-    localStorage.setItem('url', ipfsLink)
     return { cid: upload.cid, url: ipfsLink }
   }

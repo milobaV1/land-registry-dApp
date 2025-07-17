@@ -8,5 +8,5 @@
 
 export interface Search {
   currentOwner: string;
-  landIdOnChain: number;
+  id: string;
 }

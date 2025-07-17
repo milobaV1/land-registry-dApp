@@ -30,6 +30,7 @@ contract LandRegistry {
     // LandData Struct
     struct LandData{
         uint256 landId;
+        string cOfONo;
         address currentOwner;
         string state;
         string lga;
@@ -46,6 +47,7 @@ contract LandRegistry {
     // Events
     event LandCreated(
         uint256 landId,
+        string cOfONo,
         address currentOwner,
         string state,
         string lga,
@@ -66,6 +68,7 @@ contract LandRegistry {
 
     // State Variables
     LandData[] public landList; // list containing all registered land
+    mapping(string => bool) public cOfOExists;
     mapping(address => LandOwner) public landOwners;
     mapping(address => bool) public isLandOwner;
     mapping(uint256 => bool) isLandVerified;
@@ -82,6 +85,11 @@ contract LandRegistry {
         _;
     }
 
+    modifier newLand(string memory _cOfONo){
+        require(!cOfOExists[_cOfONo], "Land is already registered");
+        _;
+    }
+
     modifier landNotVerified(uint256 _landId){
         require(!isLandVerified[_landId], "Land already verified");
         _;
@@ -94,15 +102,16 @@ contract LandRegistry {
     }
 
     // Register Land Function
-    function registerLand(string memory _state, string memory _lga, uint256 _area, LandUse _landUse, string memory _ipfs) public onlyVerifiedUser{
+    function registerLand(string memory _cOfONo, string memory _state, string memory _lga, uint256 _area, LandUse _landUse, string memory _ipfs) public onlyVerifiedUser newLand(_cOfONo){
         console.log("registerLand function called");
         
         uint256 newLandId = landList.length;
         address[] memory ownershipHistory = new address[](1);
         ownershipHistory[0] = msg.sender;
 
-        LandData memory newLand = LandData({
+        LandData memory newLandData = LandData({
             landId: newLandId,
+            cOfONo: _cOfONo,
             currentOwner: msg.sender,
             state: _state,
             lga: _lga,
@@ -116,9 +125,10 @@ contract LandRegistry {
             transferStatus: TransferStatus.None
         });
 
-        landList.push(newLand);
-        lands[newLandId] = newLand;
+        landList.push(newLandData);
+        lands[newLandId] = newLandData;
         isLandVerified[newLandId] = false;
+        cOfOExists[_cOfONo] = true;
 
         // Update ownership mappings
         ownedLandsMapping[msg.sender].push(newLandId);
@@ -136,6 +146,7 @@ contract LandRegistry {
 
         emit LandCreated(
             newLandId,
+            _cOfONo,
             msg.sender,
             _state,
             _lga,

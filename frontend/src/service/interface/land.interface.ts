@@ -2,6 +2,8 @@ import type { LandUse } from "../types/land.type";
 
 export interface RegisterLand{
     currentOwner: string,
+    landAddress: string,
+    dateOfIssuance: Date,
     state: string,
     lga: string,
     area: number,
@@ -10,6 +12,7 @@ export interface RegisterLand{
 }
 
 export interface RegisterLandOnChain{
+    cOfONo: string,
     state: string,
     lga: string,
     area: number,
@@ -29,6 +32,8 @@ export interface Land{
 export interface LandResponse{
     id: string,
     currentOwner: string,
+    landAddress: string,
+    dateOfIssuance: Date,
     state: string,
     lga: string,
     area: number,
@@ -41,6 +46,7 @@ export interface LandResponse{
 export interface BlockchainLandData {
     landId: bigint
     currentOwner: string
+    cOfONo: string,
     state: string
     lga: string
     area: bigint

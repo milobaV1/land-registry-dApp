@@ -49,4 +49,9 @@ export const states = [
     value: "borno",
     lgas: ["Maiduguri", "Biu", "Jere", "Konduga", "Askira/Uba"],
   },
+  {
+    label: "Plateau",
+    value: "plateau",
+    lgas: ["Jos North", "Jos South", "Barkin Ladi", "Riyom", "Pankshin"],
+  },
 ];

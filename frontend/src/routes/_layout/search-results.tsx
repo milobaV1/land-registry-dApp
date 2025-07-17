@@ -5,7 +5,7 @@ import z from 'zod'
 export const Route = createFileRoute('/_layout/search-results')({
   validateSearch: z.object({
     currentOwner: z.string().nonempty(),
-    landIdOnChain: z.number()
+    landId: z.string().nonempty()
   }),
   component: SearchResults,
 })

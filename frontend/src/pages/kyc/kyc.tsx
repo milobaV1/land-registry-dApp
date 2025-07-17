@@ -112,7 +112,7 @@ export function KYC(){
             lastName: lastname,
             dob,
             nin: hashedNIN,
-            kycstatus: status
+            kycstatus: "verified"
         }
         
         // const response = await verifyNIN(data)

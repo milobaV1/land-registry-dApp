@@ -1,5 +1,6 @@
-import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import * as bcrypt from 'bcrypt'
+import { Land } from "src/lands/entities/land.entity";
 
 export enum KYCStatus{
     PENDING = 'pending',
@@ -35,6 +36,9 @@ export class User{
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Land, (land) => land.user)
+    lands: Land[];
 
     @BeforeInsert()
     async hashNIN(){

@@ -58,7 +58,7 @@ export function useLandRegistry() {
     console.log(`Area: ${data.area}, Land use: ${data.landuse}`)
     return write({
       functionName: "registerLand",
-      args: [data.state, data.lga, BigInt(data.area), landuseNumber, data.ipfs],
+      args: [data.cOfONo, data.state, data.lga, BigInt(data.area), landuseNumber, data.ipfs],
     })
   }
 

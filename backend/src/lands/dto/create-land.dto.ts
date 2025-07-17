@@ -1,10 +1,18 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { LandUse } from "../entities/land.entity";
 
 export class CreateLandDto {
     @IsString()
     @IsNotEmpty()
     currentOwner: string;
+    
+    @IsString()
+    @IsNotEmpty()
+    landAddress: string
+
+    @IsDate()
+    @IsNotEmpty()
+    dateOfIssuance: Date;
 
     @IsString()
     @IsNotEmpty()

@@ -1,5 +1,5 @@
 {
-  "address": "0x55104c2Bb27fE9D7426bDE339e83eF7d80941b53",
+  "address": "0xe0f013227061DeB0F27F09738Cff7866a9D93178",
   "abi": [
     {
       "type": "constructor",
@@ -20,6 +20,11 @@
         {
           "type": "uint256",
           "name": "landId",
+          "indexed": false
+        },
+        {
+          "type": "string",
+          "name": "cOfONo",
           "indexed": false
         },
         {
@@ -100,6 +105,25 @@
     },
     {
       "type": "function",
+      "name": "cOfOExists",
+      "constant": true,
+      "stateMutability": "view",
+      "payable": false,
+      "inputs": [
+        {
+          "type": "string",
+          "name": ""
+        }
+      ],
+      "outputs": [
+        {
+          "type": "bool",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "type": "function",
       "name": "doesOwnerHaveLand",
       "constant": true,
       "stateMutability": "view",
@@ -136,6 +160,10 @@
             {
               "type": "uint256",
               "name": "landId"
+            },
+            {
+              "type": "string",
+              "name": "cOfONo"
             },
             {
               "type": "address",
@@ -205,6 +233,10 @@
             {
               "type": "uint256",
               "name": "landId"
+            },
+            {
+              "type": "string",
+              "name": "cOfONo"
             },
             {
               "type": "address",
@@ -295,6 +327,10 @@
               "name": "landId"
             },
             {
+              "type": "string",
+              "name": "cOfONo"
+            },
+            {
               "type": "address",
               "name": "currentOwner"
             },
@@ -362,6 +398,10 @@
             {
               "type": "uint256",
               "name": "landId"
+            },
+            {
+              "type": "string",
+              "name": "cOfONo"
             },
             {
               "type": "address",
@@ -478,6 +518,10 @@
             {
               "type": "uint256",
               "name": "landId"
+            },
+            {
+              "type": "string",
+              "name": "cOfONo"
             },
             {
               "type": "address",
@@ -616,6 +660,10 @@
           "name": "landId"
         },
         {
+          "type": "string",
+          "name": "cOfONo"
+        },
+        {
           "type": "address",
           "name": "currentOwner"
         },
@@ -709,6 +757,10 @@
       "constant": false,
       "payable": false,
       "inputs": [
+        {
+          "type": "string",
+          "name": "_cOfONo"
+        },
         {
           "type": "string",
           "name": "_state"

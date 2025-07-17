@@ -31,6 +31,7 @@ export class LandsController {
 
   @Get('search-and-filter')
   search(@Query() query: SearchLandDto){
+    console.log("Received Query: ", query)
     return this.landsService.search(query)
   }
 

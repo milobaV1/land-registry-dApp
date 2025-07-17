@@ -6,21 +6,21 @@ import { LandCard } from "@/components/land/land-card";
 import type { Search } from "@/service/interface/search.interface";
 
 export function SearchResults(){
-    const { currentOwner, landIdOnChain } = useSearch({ from: '/_layout/search-results' })
+    const { currentOwner, landId } = useSearch({ from: '/_layout/search-results' })
     const [results, setResults] = useState<LandResponse[]>([]);
 
     useEffect(() => {
         const fetch = async () => {
             const data: Search = {
                 currentOwner,
-                landIdOnChain
+                id: landId
             }
             const response = await searchLand(data);
             console.log("Search result: ", response)
             setResults(response)
         }
         fetch();
-    }, [currentOwner, landIdOnChain])
+    }, [currentOwner, landId])
 
     return(
             <div className="h-full p-20">

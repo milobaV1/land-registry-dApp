@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from "class-validator"
 
 export class SearchLandDto{
     // @ApiPropertyOptional()
@@ -29,12 +29,16 @@ export class SearchLandDto{
     // @IsString()
     // search?: string;
 
+    // @IsNotEmpty()
+    // @Type(() => Number)
+    // @IsNumber()
+    // landIdOnChain: string;
+
     @IsString()
     @IsNotEmpty()
     currentOwner: string;
 
+    @IsUUID()
     @IsNotEmpty()
-    @Type(() => Number)
-    @IsNumber()
-    landIdOnChain: string;
+    id: string;
 }

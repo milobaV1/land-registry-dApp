@@ -13,6 +13,7 @@ async function main() {
   if (!kycAddress) {
     throw new Error("KYC_ADDRESS environment variable is not set");
   }
+  console.log(kycAddress)
   const landRegistryContract = await LandRegistryContract.deploy(kycAddress);
   
   await landRegistryContract.waitForDeployment();
